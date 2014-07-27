@@ -406,7 +406,6 @@ func StringList(raw uintptr) []string {
 		segment = append(segment, *b)
 		i++
 	}
-	return list
 }
 
 // OpenDevice opens the named device (or "" for the default device).
