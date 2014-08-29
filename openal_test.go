@@ -40,7 +40,7 @@ func TestOpenAL(t *testing.T) {
 	device.AlcGetIntegerv(ALC_MONO_SOURCES, 1, &maxSources)
 	t.Log("Maximum sources:", maxSources)
 
-	if haveCapture {
+	if haveCapture && len(captureDevices) > 0 {
 		t.Log("Have the ALC_EXT_CAPTURE extension.")
 		err = device.InitCapture(44100, FORMAT_MONO16, 44100/2)
 		if err != nil {
