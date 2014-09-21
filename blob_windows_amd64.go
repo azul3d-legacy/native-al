@@ -25,9 +25,9 @@ void* get_openal_data_size(void) {
 */
 import "C"
 
-import(
-  "reflect"
-  "unsafe"
+import (
+	"reflect"
+	"unsafe"
 )
 
 const blobFileName = "openal_soft.dll"
@@ -35,11 +35,11 @@ const blobFileName = "openal_soft.dll"
 var blob []byte
 
 func initBlob() {
-  // Initialize blob slice using blob data
-  fsz := C.get_openal_data_size()
-  sz := *(*int)(unsafe.Pointer(&fsz))
-  sliceHeader := (*reflect.SliceHeader)(unsafe.Pointer(&blob))
-  sliceHeader.Data = uintptr(C.get_openal_data())
-  sliceHeader.Len = sz
-  sliceHeader.Cap = sz
+	// Initialize blob slice using blob data
+	fsz := C.get_openal_data_size()
+	sz := *(*int)(unsafe.Pointer(&fsz))
+	sliceHeader := (*reflect.SliceHeader)(unsafe.Pointer(&blob))
+	sliceHeader.Data = uintptr(C.get_openal_data())
+	sliceHeader.Len = sz
+	sliceHeader.Cap = sz
 }
