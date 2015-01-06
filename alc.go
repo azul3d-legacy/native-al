@@ -130,29 +130,25 @@ func (d *Device) doMakeCurrent() {
 }
 
 func (d *Device) alDispatch(f func()) {
-	dispatch(func() {
-		// Make our context current
-		d.doMakeCurrent()
+	// Make our context current
+	d.doMakeCurrent()
 
-		// Execute function
-		f()
+	// Execute function
+	f()
 
-		// Check for errors
-		checkError()
-	})
+	// Check for errors
+	checkError()
 }
 
 func (d *Device) alcDispatch(f func()) {
-	dispatch(func() {
-		// Make our context current
-		d.doMakeCurrent()
+	// Make our context current
+	d.doMakeCurrent()
 
-		// Execute function
-		f()
+	// Execute function
+	f()
 
-		// Check for errors
-		d.alcCheckError()
-	})
+	// Check for errors
+	d.alcCheckError()
 }
 
 func (d *Device) alExtensionInit(ptr *unsafe.Pointer, name string) unsafe.Pointer {
@@ -203,11 +199,7 @@ func AlcGetRawString(d *Device, param int32) uintptr {
 	if d != nil {
 		cdevice = d.c
 	}
-	var ret uintptr
-	dispatch(func() {
-		ret = uintptr(unsafe.Pointer(C.goal_alcGetString(p_alcGetString, cdevice, C.ALCenum(param))))
-	})
-	return ret
+	return uintptr(unsafe.Pointer(C.goal_alcGetString(p_alcGetString, cdevice, C.ALCenum(param))))
 }
 
 func AlcGetString(d *Device, param int32) string {
@@ -233,15 +225,13 @@ func AlcGetIntegerv(d *Device, param, size int32, values *int32) {
 	if d != nil {
 		cdevice = d.c
 	}
-	dispatch(func() {
-		C.goal_alcGetIntegerv(
-			p_alcGetIntegerv,
-			cdevice,
-			C.ALCenum(param),
-			C.ALCsizei(size),
-			(*C.ALCint)(unsafe.Pointer(values)),
-		)
-	})
+	C.goal_alcGetIntegerv(
+		p_alcGetIntegerv,
+		cdevice,
+		C.ALCenum(param),
+		C.ALCsizei(size),
+		(*C.ALCint)(unsafe.Pointer(values)),
+	)
 	return
 }
 
@@ -415,22 +405,18 @@ func OpenDevice(name string, ctxAttribs []int32) (*Device, error) {
 		cname := C.CString(name)
 		defer C.free(unsafe.Pointer(cname))
 	}
-	var err error
 
 	d := new(Device)
 	d.capture = false
 	d.name = name
-	dispatch(func() {
-		d.c = C.goal_alcOpenDevice(
-			p_alcOpenDevice,
-			(*C.ALCchar)(unsafe.Pointer(cname)),
-		)
-		if d.c == nil {
-			err = ErrCantOpenDevice
-			return
-		}
-		err = d.makeContext(ctxAttribs)
-	})
+	d.c = C.goal_alcOpenDevice(
+		p_alcOpenDevice,
+		(*C.ALCchar)(unsafe.Pointer(cname)),
+	)
+	if d.c == nil {
+		return nil, ErrCantOpenDevice
+	}
+	err := d.makeContext(ctxAttribs)
 	if err != nil {
 		return nil, err
 	}
