@@ -31,4 +31,5 @@
 // user wish to restore our dynamic link library, they can simply delete theirs
 // and it will be automatically placed there once again.
 //
-package al
+package al // import "azul3d.org/native/al.v1-unstable"
+
